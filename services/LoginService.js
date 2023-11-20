@@ -49,49 +49,7 @@ const LoginService = {
 
   },
   scores: async ({ token }) => {
-    const res = await axios.post('http://jwxt.sanyau.edu.cn/syxy_jsxsd/kscj/cjcx_list', {
-      xsfs: 'all'
-    },
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded', // 设置Content-Type
-          'Cookie': token
-        }
-      });
-
-    const $ = cheerio.load(res.data);
-    const table = $('table#dataList');
-
-    // 创建一个空数组用于存储表格数据
-    const data = [];
-
-    // 获取表格的标题行
-    const headers = [];
-    table.find('tr:first-child th').each((index, element) => {
-      const headerText = $(element).text().trim().replace(/[\r\n\s]+/g, '');
-      headers.push(headerText);
-    });
-
-    // 遍历表格的每一行（跳过标题行）
-    table.find('tr:not(:first-child)').each((index, element) => {
-      const row = $(element);
-      const rowData = {};
-
-      // 遍历行中的每一列
-      row.find('td').each((index, element) => {
-        const cellData = $(element).text().trim().replace(/[\r\n\s]+/g, '');
-        rowData[headers[index]] = cellData;
-      });
-
-      // 将每行数据添加到数组中
-      data.push(rowData);
-    });
-
-    // 将表格数据转换为JSON字符串
-    const jsonData = JSON.stringify(data);
-    const List = JSON.parse(jsonData);
-    // 打印JSON数据
-    return List;
+    '--------------------------'
   },
   syllabus: async ({ token }) => {
     const res = await axios.post('http://jwxt.sanyau.edu.cn/syxy_jsxsd/xskb/xskb_list.do', {
