@@ -21,10 +21,11 @@ const FeedController = {
     })
   },
   add: async (req, res) => {
-    const { contact, comment } = req.body;
+    const { contact, comment, feedbackName } = req.body;
     const result = await FeedService.add({
       contact,
-      comment
+      comment,
+      feedbackName
     });
     res.status(201).send({
       code: 0,

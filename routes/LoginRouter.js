@@ -10,5 +10,14 @@ LoginRouter.post('/login', LoginController.login);
 LoginRouter.get('/scores', LoginController.scores);
 // 课表
 LoginRouter.get('/syllabus', LoginController.syllabus);
+// 学期列表
+LoginRouter.get('/termlist', LoginController.termlist);
+// 专业
+LoginRouter.get('/majorlist', LoginController.majorlist);
+// 全校课表
+LoginRouter.post('/allcourse', LoginController.allCourse);
+// 考试安排
+LoginRouter.post('/exam_schedule', LoginController.examSchedule);
+
 
 module.exports = LoginRouter; 

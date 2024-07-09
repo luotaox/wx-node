@@ -8,8 +8,7 @@ const EssayType = {
   viewsCount: Number,
   // 发布时间
   pubTime: Date,
-  // 概括
-  summary: String,
+  avatar: String,
   // 文章置顶
   isTop: Boolean,
   // 文章热门

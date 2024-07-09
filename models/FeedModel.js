@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const FoodType = {
+const FeedType = {
   // 联系方式
   contact: String,
   // 描述问题
@@ -9,9 +9,10 @@ const FoodType = {
   // 状态
   settle: Number,
   createTime: Date,
-  note: String
+  note: String,
+  feedbackName: String
 }
 
-const FeedModel = mongoose.model('message', new Schema(FoodType));
+const FeedModel = mongoose.model('message', new Schema(FeedType));
 
 module.exports = FeedModel;

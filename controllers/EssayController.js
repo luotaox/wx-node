@@ -10,7 +10,8 @@ const EssayController = {
 
     res.status(201).send({
       ActiveType: "OK",
-      data: result
+      data: result,
+      code: 0
     })
   },
   putIshot: async (req, res) => {
@@ -79,7 +80,8 @@ const EssayController = {
     });
     res.status(201).send({
       ActiveType: "OK",
-      data: result
+      data: result,
+      code: 0
     })
   },
   putOneEssay: async (req, res) => {
@@ -111,13 +113,13 @@ const EssayController = {
   },
   search: async (req, res) => {
     const { query } = req.body;
-    console.log(query);
     const result = await EssayService.search({
       query
     });
     res.status(201).send({
       ActiveType: "OK",
-      data: result
+      data: result,
+      code: 0
     })
   },
 }

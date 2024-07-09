@@ -1,7 +1,8 @@
 const axios = require("axios");
 const fs = require('fs');
 const cheerio = require("cheerio");
-const { courseParser } = require('../uilts/Week')
+const { courseParser } = require('../uilts/Week');
+const TermModel = require("../models/TermModel")
 
 const LoginService = {
   login: async ({ encoded, RANDOMCODE, cookie }) => {
@@ -48,9 +49,10 @@ const LoginService = {
     return Cookies;
 
   },
-  scores: async ({ token }) => {
+  scores: async ({ token, term }) => {
     const res = await axios.post('http://jwxt.sanyau.edu.cn/syxy_jsxsd/kscj/cjcx_list', {
-      xsfs: 'all'
+      xsfs: 'all',
+      kksj: term
     },
       {
         headers: {
@@ -95,7 +97,8 @@ const LoginService = {
   },
   syllabus: async ({ token }) => {
     const res = await axios.post('http://jwxt.sanyau.edu.cn/syxy_jsxsd/xskb/xskb_list.do', {
-      xnxq01id: '2023-2024-1',
+      // xnxq01id: '2023-2024-1',
+      xnxq01id: '2023-2024-2',
       sfFD: 1,
       wkbkc: 1,
     }, {
@@ -108,8 +111,79 @@ const LoginService = {
     const $ = cheerio.load(html)
     const data = courseParser($);
     return data;
-  }
+  },
+  termlist: async () => {
+    return TermModel.find();
+  },
+  majorlist: async ({ skyx, sknj, token }) => {
+    const res = await axios.get('http://jwxt.sanyau.edu.cn/syxy_jsxsd/kbcx/getZyByAjax', {
+      params: {
+        skyx,
+        sknj
+      },
+      headers: {
+        'Content-Type': 'text/html;charset=utf-8',
+        'Cookie': token
+      }
+    })
+    return res.data;
+  },
+  allCourse: async ({ xnxqh, skyx, sknj, skzy, skbj, token }) => {
+    const res = await axios.post('http://jwxt.sanyau.edu.cn/syxy_jsxsd/kbcx/kbxx_xzb_ifr', {
+      xnxqh,
+      skyx,
+      sknj,
+      skzy,
+      skbj
+    }, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': token
+      }
+    })
+    const $ = cheerio.load(res.data);
 
+    const html = $('#timetable');
+    // html.css('transform', 'scale(0.8)');
+    const table = html.prop('outerHTML');
+    return table;
+
+  },
+  // 考试安排 
+  examSchedule: async ({ term, token }) => {
+    const res = await axios.post('http://jwxt.sanyau.edu.cn/syxy_jsxsd/xsks/xsksap_list', {
+      xnxqid: term
+    }, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': token
+      }
+    })
+    const $ = cheerio.load(res.data);
+    // 选择表格行
+    const rows = $('#dataList tr');
+    // 初始化结果数组
+    const result = [];
+    // 遍历表格行（跳过标题行）
+    rows.each((index, element) => {
+      if (index === 0) return; // 跳过表头
+      const cols = $(element).find('td');
+      if (cols.length === 0) return; // 跳过没有数据的行
+      // 提取所需数据
+      const course = {
+        examCampus: $(cols[2]).text().trim(),
+        examSession: $(cols[3]).text().trim(),
+        examCode: $(cols[4]).text().trim(),
+        courseName: $(cols[5]).text().trim(),
+        teacher: $(cols[6]).text().trim(),
+        examTime: $(cols[7]).text().trim(),
+        examRoom: $(cols[8]).text().trim()
+      };
+
+      result.push(course);
+    });
+    return result;
+  }
 }
 
 module.exports = LoginService;

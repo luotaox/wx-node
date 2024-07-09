@@ -12,12 +12,13 @@ const FeedService = {
       note
     })
   },
-  add: ({ contact, comment }) => {
+  add: ({ contact, comment, feedbackName }) => {
     return FeedModel.create({
       contact,
       comment,
       settle: 0,
       note: '',
+      feedbackName,
       createTime: new Date()
     })
   },
